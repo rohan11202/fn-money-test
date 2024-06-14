@@ -1,0 +1,108 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Employee {
+  id                Int                 @id @default(autoincrement())
+  username          String
+  password          String
+  email             String
+  name              String
+  gender            String
+  mobile            String
+  extension         String
+  title             String
+  nickname          String
+  Profile           Profile?
+  Accounts          Accounts[]
+  SupportTickets    SupportTicket[]
+  LeaveApplications LeaveApplication[]
+  Payrolls          PayrollProcessed[]
+}
+
+model Profile {
+  id                  Int      @id @default(autoincrement())
+  employeeId          Int      @unique
+  dateOfBirth         DateTime
+  bloodGroup          String
+  personalEmail       String
+  fatherName          String
+  maritalStatus       String
+  spouseName          String
+  nationality         String
+  residentialStatus   String
+  placeOfBirth        String
+  countryOfOrigin     String
+  religionName        String
+  internationalEmployee Boolean
+  physicallyChallenged Boolean
+  isDirector          Boolean
+  Employee            Employee @relation(fields: [employeeId], references: [id])
+}
+
+model Accounts {
+  id          Int    @id @default(autoincrement())
+  employeeId  Int
+  accountNumber String
+  bankName    String
+  ifsc        String
+  Employee    Employee @relation(fields: [employeeId], references: [id])
+}
+
+model SuperAdmin {
+  id        Int    @id @default(autoincrement())
+  username  String
+  password  String
+}
+
+model Company {
+  id              Int    @id @default(autoincrement())
+  name            String
+  domainName      String
+  address         String
+  prefix          String
+  suffix          String
+  hrLoginUsername String
+  hrLoginPassword String
+  hrEmployeeId    String
+  hrEmployeeEmail String
+  hrEmployeeName  String
+  hrEmployeeGender String
+  hrEmployeeMobile String
+  hrEmployeeExtension String
+  hrEmployeeTitle String
+  hrEmployeeNickName String
+}
+
+model PayrollProcessed {
+  id         Int    @id @default(autoincrement())
+  employeeId Int
+  earnings   String
+  deductions String
+  Employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model SupportTicket {
+  id         Int    @id @default(autoincrement())
+  employeeId Int
+  category   String
+  subject    String
+  message    String
+  status     String
+  Employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model LeaveApplication {
+  id         Int    @id @default(autoincrement())
+  employeeId Int
+  startDate  DateTime
+  endDate    DateTime
+  leaveType  String
+  reason     String
+  Employee   Employee @relation(fields: [employeeId], references: [id])
+}
